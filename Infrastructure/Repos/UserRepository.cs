@@ -67,5 +67,18 @@ namespace Infrastructure.Repos
             }
         }
 
+        public int GenereerNieweUserId()
+        {
+            int maxId = 0;
+            foreach (var user in users)
+            {
+                if (user.UserId > maxId)
+                {
+                    maxId = user.UserId;
+                }
+            }
+            return maxId + 1;
+        }
+
     }
 }

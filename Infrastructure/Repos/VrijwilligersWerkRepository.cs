@@ -13,7 +13,7 @@ namespace Infrastructure.Repos
 
         // werk
 
-        VrijwilligersWerkDTO werk1 = new VrijwilligersWerkDTO(1, "Voedselbank", "Help bij het distribueren van voedsel", 5);
+        VrijwilligersWerkDTO werk1 = new VrijwilligersWerkDTO(1, "Voedselbank", "Help bij het uitdelen van voedsel", 5);
         VrijwilligersWerkDTO werk2 = new VrijwilligersWerkDTO(2, "Kleding Sorteren", "Sorteer gedoneerde kleding voor distributie", 4);
         VrijwilligersWerkDTO werk3 = new VrijwilligersWerkDTO(3, "Ondersteuning in onderdak", "Help bij het vinden van onderdak voor daklozen", 10);
 
@@ -72,7 +72,56 @@ namespace Infrastructure.Repos
 
 
         }
+
+
+        public int GenereerNieweWerkId()
+        {
+            int maxId = 0;
+            foreach (var werk in vrijwilligersWerk)
+            {
+                if (werk.WerkId > maxId)
+                {
+                    maxId = werk.WerkId;
+                }
+            }
+            return maxId + 1;
+        }
+
+
+
+        public void BewerkVrijwilligersWerk(VrijwilligersWerkDTO gewijzigdWerk)
+        {
+            bool werkGevonden = false;
+
+            for (int i = 0; i < vrijwilligersWerk.Count; i++)
+            {
+                if (vrijwilligersWerk[i].WerkId == gewijzigdWerk.WerkId)
+                {
+                    // Werk gevonden, eigenschappen bijwerken
+                    vrijwilligersWerk[i].Titel = gewijzigdWerk.Titel;
+                    vrijwilligersWerk[i].MaxCapaciteit = gewijzigdWerk.MaxCapaciteit;
+                    vrijwilligersWerk[i].Omschrijving = gewijzigdWerk.Omschrijving;
+                    vrijwilligersWerk[i].AantalRegistraties = gewijzigdWerk.AantalRegistraties;
+
+                    werkGevonden = true;
+                    break;
+                }
+            }
+
+            if (!werkGevonden)
+            {
+                throw new KeyNotFoundException("Vrijwilligerswerk met opgegeven ID bestaat niet.");
+            }
+        }
+
+
+
+
+
+
     }
+
+
 
 
 

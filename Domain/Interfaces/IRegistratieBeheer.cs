@@ -10,8 +10,7 @@ namespace Domain.Interfaces
 {
     public interface IRegistratieBeheer
     {
-        void RegistreerGebruikerVoorWerk(WerkRegistratieDTO registratie);
-        int BekijkCapaciteit(int werkId);
+        void RegistreerGebruikerVoorWerk(int userId, int werkId);
         bool IsWerkVol(int werkId);
         void VerwijderRegistratie(int registratieId);
     }

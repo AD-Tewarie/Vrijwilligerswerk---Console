@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,9 @@ namespace Infrastructure
             Titel = titel;
             Omschrijving = omschrijving;
             MaxCapaciteit = maxCapaciteit;
-            AantalRegistraties = 0;
+            
+     
+            
         }
 
         public bool IsBeschikbaar()
@@ -29,10 +32,7 @@ namespace Infrastructure
             return AantalRegistraties < MaxCapaciteit;
         }
 
-        public void AddDeelnemer()
-        {
-            AantalRegistraties++;
-        }
+       
 
 
     }

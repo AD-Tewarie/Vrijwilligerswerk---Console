@@ -16,92 +16,83 @@ namespace Domain
 
 
 
-        private WerkRegistratieRepository registratieRepository = new WerkRegistratieRepository();
-        private List<WerkRegistratie> registraties = new List<WerkRegistratie>();
+        private readonly UserRepository userRepository = new UserRepository();
+        private readonly VrijwilligersWerkRepository werkRepository = new VrijwilligersWerkRepository();
+        private readonly WerkRegistratieRepository registratieRepository = new WerkRegistratieRepository();
 
-        public RegistratieBeheer()
+        
+
+        public void RegistreerGebruikerVoorWerk(int gebruikerId, int werkId)
         {
-            // Initialize registrations by mapping DTOs to domain models
-            var registratieDTOs = registratieRepository.HaalAlleRegistratiesOp();
-            foreach (var dto in registratieDTOs)
+            // Haal gebruiker op
+            var gebruiker = UserMapper.MapToUser( userRepository.HaalUserOpId(gebruikerId));
+            if (gebruiker == null)
             {
-                var werk = WerkMapper.MapToVrijwilligerswerk(dto.VrijwilligersWerk);
-                var user = UserMapper.MapToUser(dto.User);
-                registraties.Add(new WerkRegistratie(werk, user, dto.registratieId));
+                throw new KeyNotFoundException("Gebruiker met opgegeven ID bestaat niet.");
             }
+
+            // Haal vrijwilligerswerk op
+            var werk = WerkMapper.MapToVrijwilligerswerk( werkRepository.HaalWerkOpId(werkId));
+            if (werk == null)
+            {
+                throw new KeyNotFoundException("Vrijwilligerswerk met opgegeven ID bestaat niet.");
+            }
+
+            // Controleer capaciteit
+            if (werk.AantalRegistraties >= werk.MaxCapaciteit)
+            {
+                throw new InvalidOperationException("Maximale capaciteit voor dit vrijwilligerswerk is bereikt.");
+            }
+
+            // Maak en voeg de registratie toe
+            var registratie = new WerkRegistratie(werk, gebruiker, registratieRepository.GenereerNieuweId());
+            registratieRepository.AddRegistratie(RegistratieMapper.MapToDTO( registratie));
+
+            // Update aantal registraties
+            werk.AantalRegistraties++;
+            werkRepository.BewerkVrijwilligersWerk(WerkMapper.MapToDTO(werk));
+
+            Console.WriteLine("Gebruiker succesvol geregistreerd voor vrijwilligerswerk.");
         }
 
-        // Methode om een gebruiker voor een vrijwilligerswerk te registreren
-        public void RegistreerGebruikerVoorWerk(WerkRegistratieDTO registratieDto)
+        public void VerwijderRegistratie(int registratieId)
         {
-            var werk = WerkMapper.MapToVrijwilligerswerk(registratieDto.VrijwilligersWerk);
-            var user = UserMapper.MapToUser(registratieDto.User);
-
-            if (werk.AantalRegistraties < werk.MaxCapaciteit)
+            // Haal registratie op via de repository
+            var registratie = registratieRepository.HaalRegistratieOpId(registratieId);
+            if (registratie == null)
             {
-                var nieuweRegistratie = new WerkRegistratie(werk, user, registratieDto.registratieId);
-                registraties.Add(nieuweRegistratie);
+                Console.WriteLine("Registratie niet gevonden.");
+                return;
+            }
 
-                // Map the WerkRegistratie to a DTO and save it to the repository
-                var registratieDTO = RegistratieMapper.MapToDTO(nieuweRegistratie);
-                registratieRepository.AddRegistratie(registratieDTO);
-
-                werk.AantalRegistraties++;
-                Console.WriteLine("Gebruiker succesvol geregistreerd.");
+            // Haal het gekoppelde vrijwilligerswerk op via de WerkId in de registratie
+            var werk = werkRepository.HaalWerkOpId(registratieId);
+            if (werk != null)
+            {
+                // Verminder het aantal registraties
+                werk.AantalRegistraties--;
+                werkRepository.BewerkVrijwilligersWerk(werk);
             }
             else
             {
-                Console.WriteLine("Registratie mislukt: Het werk is vol.");
+                Console.WriteLine("Gekoppeld vrijwilligerswerk niet gevonden.");
             }
+
+            // Verwijder registratie via de repository
+            registratieRepository.VerwijderRegistratie(registratieId);
+            Console.WriteLine("Registratie succesvol verwijderd.");
         }
 
-        // Methode om de capaciteit van het geselecteerde werk te bekijken
-        public int BekijkCapaciteit(int werkId)
-        {
-            foreach (var werk in WerkMapper.MapToWerkLijst())
-            {
-                if (werk.WerkId == werkId)
-                {
-                    return werk.MaxCapaciteit;
-                }
-            }
-            return 0;
-        }
-
-        // Methode om te controleren of het werk vol is
         public bool IsWerkVol(int werkId)
         {
-            foreach (var werk in WerkMapper.MapToWerkLijst())
+            var werk = werkRepository.HaalWerkOpId(werkId);
+            if (werk == null)
             {
-                if (werk.WerkId == werkId)
-                {
-                    return werk.AantalRegistraties >= werk.MaxCapaciteit;
-                }
+                throw new KeyNotFoundException("Vrijwilligerswerk met opgegeven ID bestaat niet.");
             }
-            return false;
+
+            return werk.AantalRegistraties >= werk.MaxCapaciteit;
         }
-
-        // Methode om een registratie te verwijderen
-        public void VerwijderRegistratie(int registratieId)
-        {
-            for (int i = 0; i < registraties.Count; i++)
-            {
-                if (registraties[i].RegistratieId == registratieId)
-                {
-                    var werk = registraties[i].vrijwilligersWerk;
-                    werk.AantalRegistraties--;
-
-                    // Map and remove from repository
-                    registratieRepository.VerwijderRegistratie(registratieId);
-                    registraties.RemoveAt(i);
-
-                    Console.WriteLine("Registratie succesvol verwijderd.");
-                    return;
-                }
-            }
-            Console.WriteLine("Registratie niet gevonden.");
-        }
-
 
 
 

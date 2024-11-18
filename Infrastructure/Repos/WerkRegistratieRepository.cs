@@ -34,21 +34,38 @@ namespace Infrastructure.Repos
                 new WerkRegistratieDTO(vrijwilligersWerkRepo.HaalWerkOpId(2), userRepository.HaalUserOpId(6), 8),
 
 
-
+               
             };
 
-            foreach (WerkRegistratieDTO registratie in werkRegistraties)
-            {
-                var werk = vrijwilligersWerkRepo.HaalWerkOpId(registratie.registratieId);
+            UpdateAantalRegistraties();
 
-                if (werk != null && werk.IsBeschikbaar())
-                {
-                    werk.AddDeelnemer();
-                }
+
+
+        }
+
+        public void UpdateAantalRegistraties()
+        {
+            
+            foreach (var werk in vrijwilligersWerkRepo.HaalAlleWerkOp())
+            {
+                werk.AantalRegistraties = 0;
             }
 
+            
+            foreach (var registratie in werkRegistraties)
+            {
+                var werk = vrijwilligersWerkRepo.HaalWerkOpId(registratie.VrijwilligersWerk.WerkId);
+                if (werk != null)
+                {
+                    werk.AantalRegistraties++;
+                }
+            }
+        }
 
-
+        public void AddRegistratie(WerkRegistratieDTO registratie)
+        {
+            werkRegistraties.Add(registratie);
+            UpdateAantalRegistraties();
         }
 
 
@@ -58,11 +75,7 @@ namespace Infrastructure.Repos
             return werkRegistraties;
         }
 
-        public void AddRegistratie(WerkRegistratieDTO registratie)
-        {
-            werkRegistraties.Add(registratie);
-
-        }
+    
 
 
         public void VerwijderRegistratie(int registratieId)
@@ -80,6 +93,32 @@ namespace Infrastructure.Repos
 
 
 
+        }
+
+        public int GenereerNieuweId()
+        {
+            int maxId = 0;
+            foreach (var registratie in werkRegistraties)
+            {
+                if (registratie.registratieId > maxId)
+                {
+                    maxId = registratie.registratieId;
+                }
+            }
+            return maxId + 1;
+        }
+
+        public object HaalRegistratieOpId(int registratieId)
+        {
+            for (int i = 0; i < werkRegistraties.Count; i++)
+            {
+                if (werkRegistraties[i].registratieId == registratieId)
+                {
+                    return werkRegistraties[i];
+                }
+
+            }
+            return null;
         }
     }
 }

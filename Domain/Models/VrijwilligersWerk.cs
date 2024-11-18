@@ -24,6 +24,8 @@ namespace Domain.Models
             Titel = titel;
             Omschrijving = omschrijving;
             MaxCapaciteit = maxCapaciteit;
+           
+            
         }
 
 

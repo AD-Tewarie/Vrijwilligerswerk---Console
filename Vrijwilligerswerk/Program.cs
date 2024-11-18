@@ -1,5 +1,6 @@
 ﻿using ConsoleUI.Views;
 using Domain;
+using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,22 +12,31 @@ namespace ConsoleUI
     public class Program
     {
 
-        static void Main(string[] args) 
+        static void Main(string[] args)
         {
-            
-            var service = new Service();
-            var vrijwilligersWerkBeheer = service.GetVrijwilligersWerkBeheer();
-            var registratieBeheer = service.GetRegistratieBeheer();
+            try
+            {
+                // Instantiate management classes
+                var registratieBeheer = new RegistratieBeheer();
+                var vrijwilligersWerkBeheer = new VrijwilligersWerkBeheer();
+                var userBeheer = new UserBeheer();
 
-            var hoofdMenu = new HoofdMenu(vrijwilligersWerkBeheer, registratieBeheer);
-            hoofdMenu.Toon();
-        
-        
-        
-        
-        
+                // Instantiate views with dependencies
+                var registratieView = new RegistratieView(registratieBeheer);
+                var vrijwilligersWerkView = new VrijwilligersWerkView(vrijwilligersWerkBeheer);
+                var userView = new UserView(userBeheer);
+
+                // Instantiate main menu with all views
+                var hoofdMenu = new HoofdMenu(registratieView, vrijwilligersWerkView, userView);
+
+                // Run the main menu
+                hoofdMenu.Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+            }
         }
-
     }
 }
 

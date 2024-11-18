@@ -14,20 +14,6 @@ namespace Domain.Mapper
     {
         private static UserRepository UserRepo = new UserRepository();
 
-        public static List<User> GetUsers()
-        {
-            List<User> users = new List<User>();
-            List<UserDTO> userDTOs = UserRepo.HaalAlleUsersOp();
-
-            foreach (UserDTO dto in userDTOs)
-            {
-                users.Add(new User(dto.UserId, dto.Naam));
-
-            }
-            return users;
-
-        }
-
 
         public static User MapToUser(UserDTO dto)
         {
