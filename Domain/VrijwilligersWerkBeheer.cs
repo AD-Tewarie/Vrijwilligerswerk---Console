@@ -17,7 +17,7 @@ namespace Domain
 
         private readonly VrijwilligersWerkRepository werkRepository = new VrijwilligersWerkRepository();
         private List<VrijwilligersWerk> werkLijst = new List<VrijwilligersWerk>();
-        private readonly VrijwilligersWerkRepositoryDB db = new VrijwilligersWerkRepositoryDB();  
+       
 
         public VrijwilligersWerkBeheer()
         {
@@ -52,7 +52,7 @@ namespace Domain
         {
             
             var werkTitels = new List<string>();
-            foreach (var werk in db.GetVrijwilligersWerk() )
+            foreach (var werk in werkRepository.HaalAlleWerkOp() )
             {
                 werkTitels.Add($"WerkID: {werk.WerkId}, Titel: {werk.Titel}, Omschrijving: {werk.Omschrijving}, Capaciteit: {werk.AantalRegistraties} / {werk.MaxCapaciteit} ");
             }
