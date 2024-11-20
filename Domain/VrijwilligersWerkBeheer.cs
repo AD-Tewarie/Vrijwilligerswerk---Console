@@ -16,6 +16,7 @@ namespace Domain
     {
 
         private readonly VrijwilligersWerkRepository werkRepository = new VrijwilligersWerkRepository();
+        private readonly VrijwilligersWerkRepositoryDB dbRepos = new VrijwilligersWerkRepositoryDB();
         private List<VrijwilligersWerk> werkLijst = new List<VrijwilligersWerk>();
        
 
@@ -57,6 +58,16 @@ namespace Domain
                 werkTitels.Add($"WerkID: {werk.WerkId}, Titel: {werk.Titel}, Omschrijving: {werk.Omschrijving}, Capaciteit: {werk.AantalRegistraties} / {werk.MaxCapaciteit} ");
             }
             return werkTitels;
+        }
+
+        public List<string> BekijkAlleWerkDB()
+        {
+            var werkLijst = new List<string>();
+            foreach (var werk in dbRepos.GetVrijwilligersWerk())
+            {
+                werkLijst.Add($"WerkID: {werk.WerkId}, Titel: {werk.Titel}, Omschrijving: {werk.Omschrijving}, Capaciteit: {werk.AantalRegistraties} / {werk.MaxCapaciteit} ");
+            }
+            return werkLijst;
         }
 
         // Methode om een werk te verwijderen

@@ -11,8 +11,8 @@ namespace Infrastructure.Repos_DB
     public class VrijwilligersWerkRepositoryDB
     {
         
-        
-        string constring = "SERVER=localhost;DATABASE=sys;UID=root;PASSWORD=Devesh97!;";
+
+        string constring = "server=localhost;user=root;database=seniorconnect;port=3306;password=Devesh97!";
         
 
         public List<VrijwilligersWerkDTO> GetVrijwilligersWerk()
@@ -23,7 +23,7 @@ namespace Infrastructure.Repos_DB
             List<VrijwilligersWerkDTO> werkLijst = new List<VrijwilligersWerkDTO>();
             if (i == 1)
             {
-                string query = "SELECT * FROM volunteer_work";
+                string query = "SELECT * FROM volenteer_work";
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
                     try
@@ -35,7 +35,7 @@ namespace Infrastructure.Repos_DB
                                 int id = reader.GetInt32("id");
                                 string titel = reader.GetString("title");
                                 string beschrijving = reader.GetString("description");
-                                int maxCapaciteit = reader.GetInt32("max_volunteers");
+                                int maxCapaciteit = reader.GetInt32("max_volenteers");
                                 
 
                                 VrijwilligersWerkDTO vrijwilligersWerk = new VrijwilligersWerkDTO(id, titel, beschrijving, maxCapaciteit);
@@ -59,5 +59,28 @@ namespace Infrastructure.Repos_DB
             }
             return werkLijst;
         }
+
+
+        public void SetVrijwilligerswerk(int id, string titel )
+        {
+            MySqlConnection connection = new MySqlConnection(constring);
+            
+            try
+            {
+                connection.Open();
+                Console.Write("connecting");
+                string query = "INSERT INTO volenteer_work (id, titel, omschrijving, max_volenteers) VALUES (@id, @titel, @omschrijving, @max_volenteers ) ";
+
+
+
+            }
+         
+           
+
+
+
+        }
+
+
     }
 }

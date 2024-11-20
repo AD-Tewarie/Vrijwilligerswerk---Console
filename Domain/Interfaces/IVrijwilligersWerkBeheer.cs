@@ -12,6 +12,8 @@ namespace Domain.Interfaces
     {
         void VoegWerkToe(VrijwilligersWerk werk);
         List<string> BekijkAlleWerk();
+
+        List<string> BekijkAlleWerkDB();
         void VerwijderWerk(int werkId);
         int GetNieweWerkId();
         public void BewerkWerk(int werkId, string nieuweTitel, int nieuweCapaciteit, string nieuweBeschrijving);

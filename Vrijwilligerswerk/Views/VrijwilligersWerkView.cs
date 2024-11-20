@@ -63,7 +63,7 @@ namespace ConsoleUI.Views
 
         public void BekijkAlleVrijwilligerswerk()
         {
-            var vrijwilligerswerken = vrijwilligersWerkBeheer.BekijkAlleWerk();
+            var vrijwilligerswerken = vrijwilligersWerkBeheer.BekijkAlleWerkDB();
             Console.WriteLine("Alle beschikbare vrijwilligerswerken:");
             foreach (var werk in vrijwilligerswerken)
             {
