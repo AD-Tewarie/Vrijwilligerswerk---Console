@@ -22,9 +22,10 @@ namespace ConsoleUI.Views
         public void ToonRegistratieMenu()
         {
             Console.WriteLine("\n--- Registratiebeheer ---");
-            Console.WriteLine("1. Voeg een registratie toe");
-            Console.WriteLine("2. Verwijder een registratie");
-            Console.WriteLine("3. Ga terug");
+            Console.WriteLine("1. Bekijk alle registraties");
+            Console.WriteLine("2. Registreer voor een Vrijwilligerswerk");
+            Console.WriteLine("3. Verwijder een registratie");
+            Console.WriteLine("4. Ga terug");
             Console.Write("Kies een optie: ");
 
             if (int.TryParse(Console.ReadLine(), out int keuze))
@@ -32,12 +33,15 @@ namespace ConsoleUI.Views
                 switch (keuze)
                 {
                     case 1:
-                        RegistreerGebruiker();
+                        BekijkAlleRegistraties();
                         break;
                     case 2:
-                        VerwijderRegistratie();
+                        RegistreerGebruiker();
                         break;
                     case 3:
+                        VerwijderRegistratie();
+                        break;
+                    case 4:
                         return;
                     default:
                         Console.WriteLine("Ongeldige keuze. Probeer opnieuw.");
@@ -69,6 +73,16 @@ namespace ConsoleUI.Views
 
             registratieBeheer.VerwijderRegistratie(registratieId);
             Console.WriteLine("Registratie succesvol verwijderd.");
+        }
+
+        public void BekijkAlleRegistraties()
+        {
+            var registraties = registratieBeheer.HaalRegistratiesOp();
+            Console.WriteLine("Alle Registraties:");
+            foreach (var reg in registraties)
+            {
+                Console.WriteLine(reg);
+            }
         }
 
     }

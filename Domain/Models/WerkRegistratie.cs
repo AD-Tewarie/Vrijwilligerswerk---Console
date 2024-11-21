@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Infrastructure.DTO;
+using Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,26 +10,41 @@ namespace Domain.Models
 {
     public class WerkRegistratie
     {
-        
 
-        public VrijwilligersWerk vrijwilligersWerk { get; set; }
 
-        public User User { get; set; }
+        private VrijwilligersWerk vrijwilligersWerk;
 
-        public int RegistratieId { get; set; }
+        private User user;
+
+        private int registratieId { get; set; }
 
 
 
         public WerkRegistratie(VrijwilligersWerk vrijwilligersWerk, User user, int registratieId)
         {
             this.vrijwilligersWerk = vrijwilligersWerk;
-            User = user;
-            this.RegistratieId = registratieId;
+            this.user = user;
+            this.registratieId = registratieId;
         }
 
 
+        public int RegistratieId
+        {
+            get { return registratieId; }
+            set { registratieId = value; }
+        }
 
+        public VrijwilligersWerk VrijwilligersWerk
+        {
+            get { return vrijwilligersWerk; }
+            set { vrijwilligersWerk = value; }
+        }
 
+        public User User
+        {
+            get { return user; }
+            set { user = value; }
+        }
 
     }
 }

@@ -11,13 +11,15 @@ namespace Domain.Interfaces
     public interface IVrijwilligersWerkBeheer
     {
         void VoegWerkToe(VrijwilligersWerk werk);
-        List<string> BekijkAlleWerk();
 
-        List<string> BekijkAlleWerkDB();
+        List<string> BekijkAlleWerk();
         void VerwijderWerk(int werkId);
         int GetNieweWerkId();
-        public void BewerkWerk(int werkId, string nieuweTitel, int nieuweCapaciteit, string nieuweBeschrijving);
+        void BewerkWerk(int werkId, string nieuweTitel, int nieuweCapaciteit, string nieuweBeschrijving);
 
+        VrijwilligersWerk HaalwerkOpID(int id);
+
+        
     }
 
 

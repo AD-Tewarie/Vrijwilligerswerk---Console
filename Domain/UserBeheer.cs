@@ -1,8 +1,7 @@
 ﻿using Domain.Interfaces;
 using Domain.Mapper;
 using Domain.Models;
-using Infrastructure.DTO;
-using Infrastructure.Repos;
+using Infrastructure.Repos_DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,39 +13,61 @@ namespace Domain
     public class UserBeheer : IUserBeheer
     {
 
-        private readonly UserRepository userRepository = new UserRepository();
+ 
+        private UserRepositoryDB repositoryDB = new UserRepositoryDB();
+        private List<User> users = new List<User>();
 
-        public void VoegGebruikerToe(int userId, string naam)
+
+
+
+        // voeg user toe
+        public void VoegGebruikerToe(string naam, string achterNaam)
         {
-            var user = new User (userId, naam);
+            int userId = GenereerId();
+            var user = new User(userId, naam, achterNaam);
             var userDTO = UserMapper.MapToDTO(user); // Convert to UserDTO
-            userRepository.VoegUserToe(userDTO);
+            repositoryDB.AddUser(userDTO);
         }
 
-        public List<User> GetAllUsers()
-        {
-            var userDTOs = userRepository.HaalAlleUsersOp();
-            var users = new List<User>();
 
-            foreach (var dto in userDTOs)
+        // haal alle users op
+        public List<string> GetAllUsers()
+        {
+            
+            var users = new List<string>();
+
+            foreach (var user in UserMapper.MapToUserLijst())
             {
-                users.Add(UserMapper.MapToUser(dto)); // Convert each to User
+                users.Add($"Gebruiker ID: {user.UserId}, Voornaam: {user.Naam}, Achternaam: {user.AchterNaam}");
             }
 
             return users;
         }
 
+
+        // verwijder gebruiker
         public void VerwijderGebruiker(int userId)
         {
-            userRepository.VerwijderUser(userId);
+            repositoryDB.VerwijderUser(userId);
         }
 
 
-        public int GenereerId ()
+        // genereer user id
+        public int GenereerId()
         {
-           return userRepository.GenereerNieweUserId();
+            users = UserMapper.MapToUserLijst();
+            int maxId = 0;
+            foreach (var user in users)
+            {
+                if (user.UserId > maxId)
+                {
+                    maxId = user.UserId;
+                }
+            }
+            return maxId + 1;
+
         }
-       
+
 
     }
 }

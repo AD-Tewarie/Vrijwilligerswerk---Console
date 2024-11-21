@@ -9,8 +9,8 @@ namespace Domain.Interfaces
 {
     public interface IUserBeheer
     {
-        void VoegGebruikerToe(int id, string naam );
-        List<User> GetAllUsers();
-        public int GenereerId();
+        void VoegGebruikerToe(string naam, string achterNaam );
+        List<string> GetAllUsers();
+        void VerwijderGebruiker(int userId);
     }
 }

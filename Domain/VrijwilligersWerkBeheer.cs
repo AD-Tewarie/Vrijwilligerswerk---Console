@@ -2,8 +2,6 @@
 using Domain.Mapper;
 using Domain.Models;
 using Infrastructure.Repos_DB;
-using Infrastructure;
-using Infrastructure.Repos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,24 +13,26 @@ namespace Domain
     public class VrijwilligersWerkBeheer : IVrijwilligersWerkBeheer
     {
 
-        private readonly VrijwilligersWerkRepository werkRepository = new VrijwilligersWerkRepository();
+
         private readonly VrijwilligersWerkRepositoryDB dbRepos = new VrijwilligersWerkRepositoryDB();
         private List<VrijwilligersWerk> werkLijst = new List<VrijwilligersWerk>();
-       
 
-        public VrijwilligersWerkBeheer()
-        {
 
-            var werkDTOs = werkRepository.HaalAlleWerkOp();
-            foreach (var dto in werkDTOs)
-            {
-                werkLijst.Add(WerkMapper.MapToVrijwilligerswerk(dto));
-            }
-        }
+
 
         public int GetNieweWerkId()
         {
-            return werkRepository.GenereerNieweWerkId();
+            werkLijst = WerkMapper.MapToWerkLijst();
+            int maxId = 0;
+            foreach (var werk in werkLijst)
+            {
+                if (werk.WerkId > maxId)
+                {
+                    maxId = werk.WerkId;
+                }
+            }
+            return maxId + 1;
+
         }
 
         // Methode om een nieuw werk toe te voegen
@@ -43,29 +43,21 @@ namespace Domain
 
 
             var werkDTO = WerkMapper.MapToDTO(nieuwWerk);
-            werkRepository.MaakNieuweWerkAan(werkDTO);
+            dbRepos.AddVrijwilligersWerk(werkDTO);
 
-            Console.WriteLine("Nieuw vrijwilligerswerk succesvol toegevoegd.");
+            Console.WriteLine($"Vrijwilligerswerk: {werk.Titel} is succesvol toegevoegd.");
         }
 
-        // Methode om alle werken te bekijken
+        // Methode voor het ophalen van een lijst van alle vrijwilligerswerk 
+
         public List<string> BekijkAlleWerk()
         {
-            
-            var werkTitels = new List<string>();
-            foreach (var werk in werkRepository.HaalAlleWerkOp() )
-            {
-                werkTitels.Add($"WerkID: {werk.WerkId}, Titel: {werk.Titel}, Omschrijving: {werk.Omschrijving}, Capaciteit: {werk.AantalRegistraties} / {werk.MaxCapaciteit} ");
-            }
-            return werkTitels;
-        }
-
-        public List<string> BekijkAlleWerkDB()
-        {
             var werkLijst = new List<string>();
-            foreach (var werk in dbRepos.GetVrijwilligersWerk())
+            
+
+            foreach (var werk in WerkMapper.MapToWerkLijst())
             {
-                werkLijst.Add($"WerkID: {werk.WerkId}, Titel: {werk.Titel}, Omschrijving: {werk.Omschrijving}, Capaciteit: {werk.AantalRegistraties} / {werk.MaxCapaciteit} ");
+                werkLijst.Add($"WerkID: {werk.WerkId}, Titel: {werk.Titel}, Omschrijving: {werk.Omschrijving}, Capaciteit: {werk.MaxCapaciteit} ");
             }
             return werkLijst;
         }
@@ -73,17 +65,7 @@ namespace Domain
         // Methode om een werk te verwijderen
         public void VerwijderWerk(int werkId)
         {
-            for (int i = 0; i < werkLijst.Count; i++)
-            {
-                if (werkLijst[i].WerkId == werkId)
-                {
-                    werkRepository.VerwijderWerk(werkId);
-                    werkLijst.RemoveAt(i);
-                    Console.WriteLine("Vrijwilligerswerk succesvol verwijderd.");
-                    return;
-                }
-            }
-            Console.WriteLine("Werk niet gevonden.");
+            dbRepos.VerwijderVrijwilligersWerk(werkId);
         }
 
 
@@ -92,7 +74,7 @@ namespace Domain
         public void BewerkWerk(int werkId, string nieuweTitel, int nieuweCapaciteit, string nieuweBeschrijving)
         {
             // Haal het bestaande vrijwilligerswerk op
-            var bestaandWerk = werkRepository.HaalWerkOpId(werkId);
+            var bestaandWerk = dbRepos.GetWerkOnId(werkId);
             if (bestaandWerk == null)
             {
                 throw new KeyNotFoundException("Vrijwilligerswerk met opgegeven ID bestaat niet.");
@@ -103,13 +85,28 @@ namespace Domain
             bestaandWerk.MaxCapaciteit = nieuweCapaciteit;
             bestaandWerk.Omschrijving = nieuweBeschrijving;
 
-            werkLijst.Add(Mapper.WerkMapper.MapToVrijwilligerswerk(bestaandWerk));
-            
+
 
             // Sla de wijzigingen op via de repository
-            werkRepository.BewerkVrijwilligersWerk(bestaandWerk);
+            dbRepos.BewerkVrijwilligersWerk(bestaandWerk);
 
             Console.WriteLine("Vrijwilligerswerk succesvol bijgewerkt.");
+        }
+
+
+        public VrijwilligersWerk HaalwerkOpID(int id)
+        {
+            werkLijst = WerkMapper.MapToWerkLijst();
+
+            for (int i = 0; i < werkLijst.Count; i++)
+            {
+                if (werkLijst[i].WerkId == id)
+                {
+                    return werkLijst[i];
+                }
+
+            }
+            return null;
         }
 
     }

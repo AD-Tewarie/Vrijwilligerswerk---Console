@@ -1,7 +1,6 @@
 ﻿using Domain.Models;
-using Infrastructure;
 using Infrastructure.DTO;
-using Infrastructure.Repos;
+using Infrastructure.Repos_DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +12,13 @@ namespace Domain.Mapper
 {
     internal class RegistratieMapper
     {
-        private static readonly WerkRegistratieRepository repository = new WerkRegistratieRepository();
+        private static WerkRegistratieRepositoryDB repository = new WerkRegistratieRepositoryDB();
         
 
         public static List<WerkRegistratie> MapToDomainList()
         {
             List<WerkRegistratie> registraties = new List<WerkRegistratie>();
-            List<WerkRegistratieDTO> registratieDTOs = repository.HaalAlleRegistratiesOp();
+            List<WerkRegistratieDTO> registratieDTOs = repository.GetWerkRegistraties();
             
 
 
@@ -28,7 +27,7 @@ namespace Domain.Mapper
                 var vrijwilligersWerk = WerkMapper.MapToVrijwilligerswerk(dto.VrijwilligersWerk);
                 var user = UserMapper.MapToUser(dto.User);
 
-                registraties.Add(new WerkRegistratie(vrijwilligersWerk, user, dto.registratieId));
+                registraties.Add(new WerkRegistratie(vrijwilligersWerk, user, dto.RegistratieId));
 
             }
             return registraties;
@@ -41,7 +40,7 @@ namespace Domain.Mapper
         public static WerkRegistratieDTO MapToDTO(WerkRegistratie registratie)
         {
             return new WerkRegistratieDTO(
-                WerkMapper.MapToDTO(registratie.vrijwilligersWerk),
+                WerkMapper.MapToDTO(registratie.VrijwilligersWerk),
                 UserMapper.MapToDTO(registratie.User),
                 registratie.RegistratieId);
 

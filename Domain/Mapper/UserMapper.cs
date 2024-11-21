@@ -1,25 +1,41 @@
 ﻿using Domain.Models;
-using Infrastructure.Repos;
-using Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.DTO;
+using Infrastructure.Repos_DB;
 
 namespace Domain.Mapper
 {
     internal class UserMapper
     {
-        private static UserRepository UserRepo = new UserRepository();
+        private static UserRepositoryDB UserRepo = new UserRepositoryDB();
+
+
+        public static List<User> MapToUserLijst()
+        {
+            List<User> user = new List<User>();
+            List<UserDTO> userDTO = UserRepo.GetUsers();
+
+            foreach (UserDTO dto in userDTO)
+            {
+                user.Add(new User(dto.UserId, dto.Naam, dto.AchterNaam));
+                
+
+            }
+            return user;
+
+        }
 
 
         public static User MapToUser(UserDTO dto)
         {
             return new User(
                 dto.UserId,
-                dto.Naam
+                dto.Naam,
+                dto.AchterNaam
 
 
                 );
@@ -29,7 +45,8 @@ namespace Domain.Mapper
         {
             return new UserDTO(
                 user.UserId,
-                user.Naam
+                user.Naam,
+                user.AchterNaam
                 );
         }
     }

@@ -1,7 +1,6 @@
 ﻿using Domain.Models;
 using Infrastructure;
-using Infrastructure.DTO;
-using Infrastructure.Repos;
+using Infrastructure.Repos_DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +11,13 @@ namespace Domain.Mapper
 {
     internal static class WerkMapper
     {
-        private static VrijwilligersWerkRepository WerkRepo = new VrijwilligersWerkRepository();
+        
+        private static VrijwilligersWerkRepositoryDB dbRepos = new VrijwilligersWerkRepositoryDB();
 
         public static List<VrijwilligersWerk> MapToWerkLijst()
         {
             List<VrijwilligersWerk> werk = new List<VrijwilligersWerk>();
-            List<VrijwilligersWerkDTO> werkDTOs = WerkRepo.HaalAlleWerkOp();
+            List<VrijwilligersWerkDTO> werkDTOs = dbRepos.GetVrijwilligersWerk();
 
             foreach (VrijwilligersWerkDTO dto in werkDTOs) {
                 werk.Add(new VrijwilligersWerk(dto.WerkId, dto.Titel, dto.Omschrijving, dto.MaxCapaciteit));
@@ -27,12 +27,6 @@ namespace Domain.Mapper
 
         }
 
-
-        public static void AddWerk(VrijwilligersWerk werk)
-        {
-            VrijwilligersWerkDTO vrijwilligersWerkDTO = new VrijwilligersWerkDTO(werk.WerkId, werk.Titel, werk.Omschrijving, werk.MaxCapaciteit);
-            WerkRepo.MaakNieuweWerkAan(vrijwilligersWerkDTO);
-        }
         
         public static VrijwilligersWerkDTO MapToDTO(VrijwilligersWerk werk)
         {

@@ -8,16 +8,39 @@ namespace Infrastructure.DTO
 {
     public class UserDTO
     {
-        public int UserId { get; set; }
-        public string Naam { get; set; }
+        private int userId { get; set; }
+        private string naam { get; set; }
+
+        private string achterNaam { get; set; }
 
 
 
-        public UserDTO(int userId, string naam)
+        public UserDTO(int userId, string naam, string achternaam)
         {
-            UserId = userId;
-            Naam = naam;
+            this.userId = userId;
+            this.naam = naam;
+            this.achterNaam = achternaam;
         }
+
+
+        public int UserId
+        {
+            get { return userId; }
+            set { userId = value; }
+        }
+
+        public string Naam
+        {
+            get { return naam; }
+            set { naam = value; }
+        }
+
+        public string AchterNaam
+        {
+            get { return achterNaam; }
+            set { achterNaam = value; }
+        }
+
 
 
     }

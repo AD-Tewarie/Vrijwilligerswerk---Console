@@ -63,7 +63,7 @@ namespace ConsoleUI.Views
 
         public void BekijkAlleVrijwilligerswerk()
         {
-            var vrijwilligerswerken = vrijwilligersWerkBeheer.BekijkAlleWerkDB();
+            var vrijwilligerswerken = vrijwilligersWerkBeheer.BekijkAlleWerk();
             Console.WriteLine("Alle beschikbare vrijwilligerswerken:");
             foreach (var werk in vrijwilligerswerken)
             {
@@ -89,13 +89,19 @@ namespace ConsoleUI.Views
 
             VrijwilligersWerk werk = new VrijwilligersWerk(werkId ,titel, beschrijving, maxCapaciteit); 
             vrijwilligersWerkBeheer.VoegWerkToe(werk);
-            Console.WriteLine("Nieuw vrijwilligerswerk succesvol toegevoegd.");
+           
         }
 
         public void BewerkVrijwilligersWerk()
         {
+
+            BekijkAlleVrijwilligerswerk();
+
             Console.Write("Voer het ID in van het vrijwilligerswerk dat je wilt bewerken: ");
             int werkId = int.Parse(Console.ReadLine());
+            Console.ReadKey(); 
+            Console.Clear(); 
+
 
             Console.Write("Voer de nieuwe titel in: ");
             string nieuweTitel = Console.ReadLine();
@@ -107,13 +113,17 @@ namespace ConsoleUI.Views
             string nieuweBeschrijving = Console.ReadLine();
 
             vrijwilligersWerkBeheer.BewerkWerk(werkId, nieuweTitel, nieuweCapaciteit, nieuweBeschrijving);
-            Console.WriteLine("Vrijwilligerswerk succesvol bijgewerkt.");
+            
         }
 
         public void VerwijderVrijwilligersWerk()
         {
+            BekijkAlleVrijwilligerswerk();
+
             Console.Write("Voer het ID in van het vrijwilligerswerk dat je wilt verwijderen: ");
             int werkId = int.Parse(Console.ReadLine());
+            Console.ReadKey();
+            Console.Clear();
 
             vrijwilligersWerkBeheer.VerwijderWerk(werkId);
             Console.WriteLine("Vrijwilligerswerk succesvol verwijderd.");

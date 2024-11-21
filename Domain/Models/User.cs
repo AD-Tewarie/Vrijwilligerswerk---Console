@@ -10,21 +10,37 @@ namespace Domain.Models
     {
         
 
-        public int UserId { get; set; }
-        public string Naam { get; set; }
+        private int userId { get; set; }
+        private string naam { get; set; }
 
-        public override string ToString()
+        private string achterNaam { get; set; }
+
+
+        public User(int userId, string naam, string achternaam)
         {
-            return $"Gebruiker {UserId}: {Naam}";
+            this.userId = userId;
+            this.naam = naam;
+            this.achterNaam = achternaam;
         }
 
-        public User(int userId, string naam)
+
+        public int UserId
         {
-            UserId = userId;
-            Naam = naam;
+            get { return userId; }
+            set { userId = value; }
         }
 
+        public string Naam
+        {
+            get { return naam; }
+            set { naam = value; }
+        }
 
+        public string AchterNaam
+        {
+            get { return achterNaam; }
+            set { achterNaam = value; }
+        }
 
     }
 }
