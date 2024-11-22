@@ -8,13 +8,13 @@ namespace Domain.Models
 {
     public class VrijwilligersWerk
     {
-        
 
-        private int werkId { get; set; }
-        private string titel { get; set; }
-        private string omschrijving { get; set; }
-        private int maxCapaciteit { get; set; }
-        private int aantalRegistraties { get; set; }
+
+        private int werkId;
+        private string titel;
+        private string omschrijving;
+        private int maxCapaciteit;
+        private int aantalRegistraties;
 
 
 

@@ -8,12 +8,11 @@ namespace Domain.Models
 {
     public class User
     {
-        
 
-        private int userId { get; set; }
-        private string naam { get; set; }
 
-        private string achterNaam { get; set; }
+        private int userId;
+        private string naam;
+        private string achterNaam;
 
 
         public User(int userId, string naam, string achternaam)

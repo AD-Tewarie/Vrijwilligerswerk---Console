@@ -41,7 +41,7 @@ namespace Domain.Mapper
                 );
         }
 
-        internal static UserDTO MapToDTO(User user)
+        public static UserDTO MapToDTO(User user)
         {
             return new UserDTO(
                 user.UserId,

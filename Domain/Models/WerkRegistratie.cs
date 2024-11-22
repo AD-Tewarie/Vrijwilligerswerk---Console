@@ -16,7 +16,7 @@ namespace Domain.Models
 
         private User user;
 
-        private int registratieId { get; set; }
+        private int registratieId;
 
 
 
